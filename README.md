@@ -83,7 +83,7 @@ Expect `Validation passed.`
 
 ## Upstream sync
 
-Skills and the Hub rule are mirrored from [uniskela/adhd-hub](https://github.com/uniskela/adhd-hub) with path/link adaptations for Marketplace packaging.
+Skills and the Hub rule are mirrored from [uniskela/adhd-hub](https://github.com/uniskela/adhd-hub) with path/link adaptations for Marketplace packaging. **Hub is the source of truth** — do not hand-edit mirrored skill/rule bodies here except for packaging emergencies. Sync is automated from Hub via GitHub Actions and opens a PR on this repo (never direct-pushes `main`). Contributor docs: [Cursor plugin skill sync](https://github.com/uniskela/adhd-hub/blob/main/docs/cursor-plugin-skill-sync.md).
 
 | Field | Value |
 |-------|--------|
@@ -92,7 +92,6 @@ Skills and the Hub rule are mirrored from [uniskela/adhd-hub](https://github.com
 | `hub_skill_version` (env-check) | `1` |
 | `hub_guidance_version` (rule) | `4` |
 
-Record a new SHA and versions whenever you re-copy from upstream.
 
 ## License
 
