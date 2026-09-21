@@ -1,0 +1,30 @@
+# ADHD Hub MCP tools (reference)
+
+| Tool | Purpose |
+|------|---------|
+| `session_digest` | Compact open threads (id, title, goal, focus, next, blocked, resume) + reminders |
+| `check_overlap` | Rank open threads vs a query (uses goal/title/focus, not full PROGRESS.md) |
+| `resolve_project` | Map cwd → project slug |
+| `list_projects` / `upsert_project` | Project registry |
+| `list_open_threads` | Browse unfinished work |
+| `upsert_thread` | Create/update a thread (one finishable outcome; optional goal/focus/next) |
+| `upsert_progress` | Update structured active state + PROGRESS.md; pass `thread_id` when known; `force_new_thread` for a new outcome; may return `needs_thread_selection` |
+| `pause_thread` | Set resume_step on a known thread |
+| `mark_done` | Close a known thread |
+| `set_reminder` | once / session / daily / random |
+
+## Progress routing
+
+- Explicit `thread_id` → update exactly that thread
+- `force_new_thread=true` → always create a new outcome thread
+- No unfinished threads → create when `create_thread_if_missing`
+- One clearly matching unfinished thread (goal/title) → reuse
+- Multiple unfinished / ambiguous → `needs_thread_selection` with candidates (does not silently pick newest)
+
+Structured fields: `goal`, `focus` (exactly one), `next_steps` (max 3), `blocked_reason` (omit when empty), `resume_step`.
+
+Setup: configure this plugin’s MCP variables `ADHD_HUB_MCP_URL` (your Hub `/mcp` endpoint) and `ADHD_HUB_AUTH_TOKEN` (Bearer matching the Hub server). Prefer HTTPS; plain HTTP is only for loopback, Docker, or a private LAN/Tailscale network controlled by the operator. Browser session cookies only authorize REST, not MCP.
+
+**Verify after install:** confirm Cursor’s MCP panel lists server `adhd-hub` with tools such as `resolve_project` and `session_digest`, and/or `curl` health on your Hub base URL (`GET /api/health`). Do not rely on Hub-repo-only scripts such as `probe_mcp.py`. Never paste credentials into progress notes. The Hub stores only the requested project/thread/reminder fields in its configured local SQLite/Markdown directory; this protocol sends no full transcripts.
+
+Hub UI: `{ADHD_HUB_PUBLIC_URL}/ui` when configured. See [uniskela/adhd-hub](https://github.com/uniskela/adhd-hub) for server install and docs.
