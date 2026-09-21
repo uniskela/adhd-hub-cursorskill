@@ -1,0 +1,40 @@
+{
+  "name": "adhd-hub",
+  "displayName": "ADHD Hub",
+  "version": "0.1.0",
+  "description": "Connect Cursor to your self-hosted ADHD Progress Hub: session continuity skills, project registry skill, env-check, always-on Hub rule, and BYO MCP wiring.",
+  "author": {
+    "name": "ADHD Hub contributors"
+  },
+  "homepage": "https://github.com/uniskela/adhd-hub",
+  "repository": "https://github.com/uniskela/adhd-hub-cursorskill",
+  "license": "MIT",
+  "keywords": [
+    "adhd",
+    "continuity",
+    "progress",
+    "mcp",
+    "self-hosted",
+    "session",
+    "projects",
+    "cursor"
+  ],
+  "logo": "assets/logo.svg",
+  "variables": {
+    "type": "object",
+    "properties": {
+      "ADHD_HUB_MCP_URL": {
+        "type": "string",
+        "title": "ADHD Hub MCP URL",
+        "description": "Streamable HTTP MCP endpoint for your self-hosted Hub (example: http://127.0.0.1:8787/mcp or https://hub.example.ts.net/mcp)",
+        "default": "http://127.0.0.1:8787/mcp"
+      },
+      "ADHD_HUB_AUTH_TOKEN": {
+        "type": "string",
+        "title": "ADHD Hub auth token",
+        "description": "Bearer token matching ADHD_HUB_AUTH_TOKEN on your Hub server. Never commit this value."
+      }
+    },
+    "required": ["ADHD_HUB_MCP_URL", "ADHD_HUB_AUTH_TOKEN"]
+  }
+}

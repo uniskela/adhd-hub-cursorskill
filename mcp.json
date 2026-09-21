@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "adhd-hub": {
+      "url": "${ADHD_HUB_MCP_URL}",
+      "headers": {
+        "Authorization": "Bearer ${ADHD_HUB_AUTH_TOKEN}"
+      }
+    }
+  }
+}
