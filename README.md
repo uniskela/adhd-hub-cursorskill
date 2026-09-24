@@ -96,13 +96,3 @@ Skills and the Hub rule are mirrored from [uniskela/adhd-hub](https://github.com
 ## License
 
 MIT — Copyright (c) 2026 ADHD Hub contributors. See [LICENSE](LICENSE).
-
-## Marketplace submission
-
-Public Git URL: `https://github.com/uniskela/adhd-hub-cursorskill`. Submit at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). Checklist:
-
-- Valid root `.cursor-plugin/plugin.json` (`name`: `adhd-hub`, `repository` → this GitHub URL)
-- Every `${VAR}` in `mcp.json` declared under `variables`
-- Skills/rules frontmatter; logo committed
-- `node scripts/validate-template.mjs` passes
-- Tested against a running Hub
