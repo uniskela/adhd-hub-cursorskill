@@ -87,7 +87,7 @@ Skills and the Hub rule are mirrored from [uniskela/adhd-hub](https://github.com
 
 | Field | Value |
 |-------|--------|
-| Upstream commit | `b3fdad0f544f7a422b31d1fd75fb3990bce23116` |
+| Upstream commit | `32b1e2d5009dab5b823380f8179177b956b63d62` |
 | `hub_skill_version` (session / projects) | `5 / 4` |
 | `hub_skill_version` (env-check) | `2` |
 | `hub_guidance_version` (rule) | `5` |
