@@ -101,10 +101,10 @@ Checkpoint the current thread, then switch to or create the other thread. Do not
 
 ## Finished / leave unfinished
 
-Prefer `completion.ready` on the thread when present (checkpoint first if Hub state looks stale):
+When `completion.ready` is present on the thread it is authoritative (checkpoint first if Hub state looks stale). Use your own Goal assessment only when `completion.ready` is absent:
 
-- `completion.ready == true` (or the Goal is clearly satisfied) → optional final checkpoint, then `mark_done(thread_id=...)` for that thread only.
-- `completion.ready == false` or any meaningful work remains (review, draft PR, CI, merge, deploy, verify, next action) → `upsert_progress` then `pause_thread(thread_id, next_step=...)`. Do **not** call `mark_done`.
+- `completion.ready == true`, or (field absent and the Goal is clearly satisfied) → optional final checkpoint, then `mark_done(thread_id=...)` for that thread only.
+- `completion.ready == false` (even if the Goal looks satisfied), or (field absent and any meaningful work remains: review, draft PR, CI, merge, deploy, verify, next action) → `upsert_progress` then `pause_thread(thread_id, next_step=...)`. Do **not** call `mark_done`.
 - If `mark_done` is denied/rejected because work remains: **do not retry** unchanged. Inspect the reason, checkpoint, `pause_thread`, and continue the normal response (continuity failure is not a fatal agent failure).
 
 Never close unrelated overlap hits. Soft-close with `dismiss_thread`. Final notes without opening work: `upsert_progress(create_thread_if_missing=false)`.
