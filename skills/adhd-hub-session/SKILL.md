@@ -1,6 +1,6 @@
 ---
 name: adhd-hub-session
-hub_skill_version: 6
+hub_skill_version: 7
 description: >-
   ADHD Progress Hub continuity protocol for substantial coding work. Use the
   operator's adhd-hub MCP when starting/resuming meaningful project work,
@@ -63,6 +63,8 @@ honest — never invent “current” without a local check.
 
 A thread is not the whole project, the whole repository, one chat session, or every implementation subtask.
 
+Size the Goal to an outcome the responsible agent can finish (e.g. implement X and open a review-ready PR). A Goal that includes merge/deploy must stay open/paused while review, CI, or merge remains. Do not auto-create a second thread for every PR.
+
 Keep the same thread when implementing, testing, documenting, or reviewing the same outcome.
 
 Create or switch threads when the definition of done changes, work moves to another independent feature/release/deployment, another issue/PR is a separately finishable outcome, or the previous outcome is already complete.
@@ -72,7 +74,7 @@ Before updating an existing thread, compare the new work with that thread's **Go
 ## Session start / resume
 
 1. `resolve_project` with `workspace_path` and `create_if_missing=false` (lookup only). Do not implicitly create unfamiliar projects. Use `create_if_missing=true` or `register_workspace` only after the workspace is authorized to be registered.
-2. `session_digest` with the same `workspace_path` / short `query` for the task. Prefer compact fields: id, title, goal, status, focus, ≤3 next, blocked, resume. Read `guidance.status` / `guidance.hint` when present.
+2. `session_digest` with the same `workspace_path` / short `query` for the task. Prefer compact fields: id, title, goal, status, focus, ≤3 next, blocked, resume, `completion`. Read `guidance.status` / `guidance.hint` when present.
 3. If resuming a known thread, reuse its `thread_id`. Otherwise `check_overlap` and compare candidates by **Goal**, not merely project name.
 4. Reuse a candidate only if current work advances the same finishable outcome. Otherwise create a separate thread.
 5. Use `list_reminders(due_only=true)` only when reminders are relevant.
@@ -97,9 +99,15 @@ Then `pause_thread(thread_id, next_step=...)` when leaving mid-task so resume is
 
 Checkpoint the current thread, then switch to or create the other thread. Do not change the old thread's Goal to mean different work.
 
-## Finished
+## Finished / leave unfinished
 
-`mark_done(thread_id=...)` only when that thread's Goal is satisfied. Never close unrelated overlap hits. Soft-close with `dismiss_thread`. Final notes without opening work: `upsert_progress(create_thread_if_missing=false)`.
+Checkpoint first if Hub state looks stale. `completion.ready` only reflects stored state (status, pause, `next_steps`, blocker, Goal present) — it cannot see PR/CI/merge/deploy state — so it can block `mark_done` but never approve it alone:
+
+- Call `mark_done(thread_id=...)` for that thread only when **both** hold: `completion.ready` is `true` or absent, **and** the Goal is clearly satisfied with no meaningful work remaining. Optional final checkpoint first.
+- Otherwise — `completion.ready == false` (even if the Goal looks satisfied), or any meaningful work remains (review, draft PR, CI, merge, deploy, verify, next action) even when `completion.ready == true` — `upsert_progress` (record the remaining actions in `next_steps`) then `pause_thread(thread_id, next_step=...)`. Do **not** call `mark_done`.
+- If `mark_done` is denied/rejected because work remains: **do not retry** unchanged. Inspect the reason, checkpoint, `pause_thread`, and continue the normal response (continuity failure is not a fatal agent failure).
+
+Never close unrelated overlap hits. Soft-close with `dismiss_thread`. Final notes without opening work: `upsert_progress(create_thread_if_missing=false)`.
 
 ## Remind later
 
