@@ -34,6 +34,8 @@ Hub owns version pins (`<!-- adhd-hub:guidance-version:N -->`, `hub_skill_versio
 
 Structured fields: `goal`, `focus` (exactly one), `next_steps` (max 3), `blocked_reason` (omit when empty), `resume_step`.
 
+Thread payloads from `upsert_progress`, `upsert_thread`, `pause_thread`, `list_open_threads`, `session_digest` and `get_overview` include advisory `return_cue` coaching (`quality` `missing` / `vague` / `concrete`, `signals`, `hint`, optional `suggestion` from the thread's own Focus/Next). Never blocking; improve `resume_step` once when you know the real first action, never with invented files or commands.
+
 Setup: configure this plugin’s MCP variables `ADHD_HUB_MCP_URL` (your Hub `/mcp` endpoint) and `ADHD_HUB_AUTH_TOKEN` (Bearer matching the Hub server). Require HTTPS for every non-loopback connection unless the entire path is protected by an authenticated encrypted overlay such as Tailscale. Unencrypted HTTP is allowed only on loopback; a private LAN or Docker network alone does not protect bearer tokens. Browser session cookies only authorize REST, not MCP.
 
 **Verify after install:** confirm Cursor’s MCP panel lists server `adhd-hub` with tools such as `resolve_project` and `session_digest`, and/or `curl` health on your Hub base URL (`GET /api/health`). Do not rely on Hub-repo-only scripts such as `probe_mcp.py`. Never paste credentials into progress notes. The Hub stores only the requested project/thread/reminder fields in its configured local SQLite/Markdown directory; this protocol sends no full transcripts.
