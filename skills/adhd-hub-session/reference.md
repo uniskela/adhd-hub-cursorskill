@@ -11,7 +11,7 @@
 | `upsert_thread` | Create/update a thread (one finishable outcome; optional goal/focus/next) |
 | `upsert_progress` | Update structured active state + PROGRESS.md; pass `thread_id` when known; `force_new_thread` for a new outcome; may return `needs_thread_selection` |
 | `pause_thread` | Pause unfinished work; set concrete next resume step |
-| `mark_done` | Close a known thread only when `completion.ready` is not `false` **and** the Goal is done with no remaining work; do not retry if rejected for unfinished work |
+| `mark_done` | Close a known thread when `completion.ready` / Goal done; do not retry if rejected for unfinished work |
 | `set_reminder` | once / session / daily / random |
 
 ## Keeping skills / AGENTS current
@@ -33,6 +33,8 @@ Hub owns version pins (`<!-- adhd-hub:guidance-version:N -->`, `hub_skill_versio
 - Multiple unfinished / ambiguous → `needs_thread_selection` with candidates (does not silently pick newest)
 
 Structured fields: `goal`, `focus` (exactly one), `next_steps` (max 3), `blocked_reason` (omit when empty), `resume_step`.
+
+Thread payloads from `upsert_progress`, `upsert_thread`, `pause_thread`, `list_open_threads`, `session_digest` and `get_overview` include advisory `return_cue` coaching (`quality` `missing` / `vague` / `concrete`, `signals`, `hint`, optional `suggestion` from the thread's own Focus/Next). Never blocking; improve `resume_step` once when you know the real first action, never with invented files or commands.
 
 Setup: configure this plugin’s MCP variables `ADHD_HUB_MCP_URL` (your Hub `/mcp` endpoint) and `ADHD_HUB_AUTH_TOKEN` (Bearer matching the Hub server). Require HTTPS for every non-loopback connection unless the entire path is protected by an authenticated encrypted overlay such as Tailscale. Unencrypted HTTP is allowed only on loopback; a private LAN or Docker network alone does not protect bearer tokens. Browser session cookies only authorize REST, not MCP.
 

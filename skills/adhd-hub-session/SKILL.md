@@ -1,6 +1,6 @@
 ---
 name: adhd-hub-session
-hub_skill_version: 7
+hub_skill_version: 8
 description: >-
   ADHD Progress Hub continuity protocol for substantial coding work. Use the
   operator's adhd-hub MCP when starting/resuming meaningful project work,
@@ -87,7 +87,7 @@ At meaningful checkpoints, call `upsert_progress` with the **explicit** `thread_
 - `focus` — exactly one startable action
 - `next_steps` — max 3
 - `blocked_reason` — only when actually blocked (omit otherwise)
-- `resume_step` — one concrete re-entry instruction
+- `resume_step` — one concrete re-entry instruction: name what to open, run or check first ("Open service.py, finish the failing sync test, then run pytest", not "Continue later")
 - omit `content` on routine checkpoints; never write “Thread upserted from …” as note text
 - optional short `content` only for a rare human-meaningful event (decision, blocker, ship)
 
@@ -95,16 +95,18 @@ Do not checkpoint trivial events. Prefer updating structured active state over r
 
 Then `pause_thread(thread_id, next_step=...)` when leaving mid-task so resume is concrete.
 
+Checkpoint, pause and digest responses carry an advisory `return_cue` (`quality`: `missing` / `vague` / `concrete`, plus a short `hint`). It never blocks a save, pause or `mark_done`. When it is not `concrete` and you know the real first action from this session, send one improved `resume_step`; `return_cue.suggestion` only echoes the thread's own Focus/Next. Do not invent files or commands to satisfy it, and do not loop on it.
+
 ## Context switch
 
 Checkpoint the current thread, then switch to or create the other thread. Do not change the old thread's Goal to mean different work.
 
 ## Finished / leave unfinished
 
-Checkpoint first if Hub state looks stale. `completion.ready` only reflects stored state (status, pause, `next_steps`, blocker, Goal present) — it cannot see PR/CI/merge/deploy state — so it can block `mark_done` but never approve it alone:
+Prefer `completion.ready` on the thread when present (checkpoint first if Hub state looks stale):
 
-- Call `mark_done(thread_id=...)` for that thread only when **both** hold: `completion.ready` is `true` or absent, **and** the Goal is clearly satisfied with no meaningful work remaining. Optional final checkpoint first.
-- Otherwise — `completion.ready == false` (even if the Goal looks satisfied), or any meaningful work remains (review, draft PR, CI, merge, deploy, verify, next action) even when `completion.ready == true` — `upsert_progress` (record the remaining actions in `next_steps`) then `pause_thread(thread_id, next_step=...)`. Do **not** call `mark_done`.
+- `completion.ready == true` (or the Goal is clearly satisfied) → optional final checkpoint, then `mark_done(thread_id=...)` for that thread only.
+- `completion.ready == false` or any meaningful work remains (review, draft PR, CI, merge, deploy, verify, next action) → `upsert_progress` then `pause_thread(thread_id, next_step=...)`. Do **not** call `mark_done`.
 - If `mark_done` is denied/rejected because work remains: **do not retry** unchanged. Inspect the reason, checkpoint, `pause_thread`, and continue the normal response (continuity failure is not a fatal agent failure).
 
 Never close unrelated overlap hits. Soft-close with `dismiss_thread`. Final notes without opening work: `upsert_progress(create_thread_if_missing=false)`.
