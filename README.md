@@ -83,11 +83,11 @@ Expect `Validation passed.`
 
 ## Upstream sync
 
-Skills and the Hub rule are mirrored from [uniskela/adhd-hub](https://github.com/uniskela/adhd-hub) with path/link adaptations for Marketplace packaging. **Hub is the source of truth** — do not hand-edit mirrored skill/rule bodies here except for packaging emergencies. Sync is automated from Hub via GitHub Actions and opens a PR on this repo (never direct-pushes `main`). Contributor docs: [Cursor plugin skill sync](https://github.com/uniskela/adhd-hub/blob/main/docs/cursor-plugin-skill-sync.md).
+Skills and the Hub rule are mirrored from [uniskela/adhd-hub](https://github.com/uniskela/adhd-hub) with path/link adaptations for Marketplace packaging. **Hub is the source of truth** — do not hand-edit mirrored skill/rule bodies here except for packaging emergencies. Sync is automated from Hub via GitHub Actions and opens a PR on this repo (never direct-pushes `main`). Contributor docs: [Cursor plugin skill sync](https://github.com/uniskela/adhd-hub/blob/main/docs/public/cursor-plugin-skill-sync.md).
 
 | Field | Value |
 |-------|--------|
-| Upstream commit | `7ca8939c950e3bac765f3a6cae5bb769b5c6a1ee` |
+| Upstream commit | `e6fd8da0d958588146444c0a6b8856bc459a4b9f` |
 | `hub_skill_version` (session / projects) | `9 / 5` |
 | `hub_skill_version` (env-check) | `3` |
 | `hub_guidance_version` (rule) | `8` |
